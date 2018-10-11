@@ -1,6 +1,8 @@
 import Vapor
+import Foundation
 
 /// Controls basic CRUD operations on `Todo`s.
+
 final class TodoController {
     /// Returns a list of all `Todo`s.
     func index(_ req: Request) throws -> Future<[Todo]> {
@@ -21,3 +23,4 @@ final class TodoController {
         }.transform(to: .ok)
     }
 }
+

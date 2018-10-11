@@ -7,14 +7,15 @@ let package = Package(
         // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0"),
 
-        // 🔵 Swift ORM (queries, models, relations, etc) built on SQLite 3.
-        .package(url: "https://github.com/vapor/fluent-sqlite.git", from: "3.0.0"),
+        //PostgreSQL Database
+        .package(url: "https://github.com/vapor/fluent-postgresql.git", from: "1.0.0-rc"),
         
-        //MongoKitten - MongoDB database
-        .package(url: "https://github.com/OpenKitten/MongoKitten.git", from: "4.0.0")
+        //Kuery - Enables Postgresql queries
+        .package(url: "https://github.com/IBM-Swift/Swift-Kuery-PostgreSQL.git", from: "1.2.0"),
+        .package(url: "https://github.com/IBM-Swift/Swift-Kuery-ORM.git", from: "0.3.1")
     ],
     targets: [
-        .target(name: "App", dependencies: ["FluentSQLite", "Vapor" , "MongoKitten"]),
+        .target(name: "App", dependencies: ["FluentPostgreSQL", "Vapor", "SwiftKueryORM", "SwiftKueryPostgreSQL"]),
         .target(name: "Run", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: ["App"])
     ]

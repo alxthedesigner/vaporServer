@@ -1,63 +1,72 @@
 import Vapor
+import FluentPostgreSQL
+import SwiftKueryPostgreSQL
+//import SwiftKueryORM
 
-struct UserData: Content {
-    
-    var email: String
-    var password: String
-    
-}
+
 
 struct DataResponse: Content{
     
-    var request: UserData
+    var req: UserData
     
 }
 
-/// Register your application's routes here.
+final class UserData: Content {
+    var id: UUID?
+
+    var name: String
+    var email: String
+    var password: String
+    var school: String
+    
+    init(name: String, email: String, password: String, school: String) {
+        self.name = name
+        self.email = email
+        self.password = password
+        self.school = school
+    }
+}
+
+extension UserData: PostgreSQLUUIDModel {}
+extension UserData: Migration {}
+
+
+
+
+final class MenuData: Content {
+    var id: UUID?
+    
+    var restaurant: String
+    var item: String
+    var price: Double
+    var description: String
+    
+    init(restaurant: String, item: String, price: Double, description: String) {
+        self.restaurant = restaurant
+        self.item = item
+        self.price = price
+        self.description = description
+    }
+}
+
+extension MenuData: PostgreSQLUUIDModel {}
+extension MenuData: Migration {}
+
+
+
+
+
+//MARK: Routes
 public func routes(_ router: Router) throws {
-    
-    let menu = [
-        "Chicken Kobob": "$5.00",
-        "Sausage Kobob": "$5.00",
-        "Steak Kobob": "$6.00",
-        "Shrimp Kobob": "$7.00",
-        "Veggie Kobob": "$5.00"
-        
-    ]
-    
-    
-    router.get("menu") { req in
-        return menu
-    }
-    
-    router.post("info"){ req -> DataResponse in
-        let data = UserData(email:"email@email.com", password: "pwd")
-            print(data.email) // user@vapor.codes
-            print(data.password) // don't look!
-            
-            return DataResponse(request: data)
-        }
-    
 
+   
+    let userController = UserController()
+    let menuController = MenuController()
     
-    /*Working Post Request
-    router.post("userInfo"){ req -> Future<HTTPStatus> in
-        return try req.content.decode(UserData.self).map(to: HTTPStatus.self){ data in
-            
-            let data = UserData(email: "email@email.com", password: "pwd")
-            print(data.email) // user@vapor.codes
-            print(data.password) // don't look!
-            
-            return .ok
-    }
-}*/
+    router.get("users", use: userController.index)
+    router.post("users", use: userController.create)
+    router.get("menu", use: menuController.index)
+    router.post("menu", use: menuController.create)
     
-
-    
-    
-    // Example of configuring a controller
-    /*let todoController = TodoController()
-    router.get("todos", use: todoController.index)
-    router.post("todos", use: todoController.create)
-    router.delete("todos", Todo.parameter, use: todoController.delete)*/
+    //router.delete("todos", Todo.parameter, use: todoController.delete)*/
 }
